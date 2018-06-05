@@ -1,7 +1,7 @@
 library("readr")
-# setwd("C:/Users/Mateusz Kubiak/Dropbox/WebMiner")
-source("R/telepolisCrawler.R")
-source("R/telepolisScrapper.R")
+
+source("lib/telepolisCrawler.R")
+source("lib/telepolisScrapper.R")
 
 
 articlesURLs <- crawlTelepolisURLs()
@@ -11,8 +11,8 @@ database <- getTelepolisData(articlesURLs[1:12])
 articles <- database[[1]]
 comments <- database[[2]]
 
-write_delim(articles, path = paste0(getwd(), "/figs/articles.csv"),delim=';')
-write_delim(comments, path = paste0(getwd(), "/figs/comments.csv"),delim=';')
+write_delim(articles, path = paste0(getwd(), "/temp/articles.csv"),delim=';')
+write_delim(comments, path = paste0(getwd(), "/temp/comments.csv"),delim=';')
 
 View(comments)
 View(database)
