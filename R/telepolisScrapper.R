@@ -53,7 +53,7 @@ getTelepolisData <- function(urls)
           # Remove following links to related articles
           str_replace_all('Zobacz.*\n',"") %>%
           # Remove information about source of an article
-          str_replace_all('?r?d?o tekstu:.*\n',"") %>%
+          str_replace_all('Źródło tekstu:.*\n',"") %>%
           # Remove html markups
           str_replace_all('\n|\t|\r',"") %>%
           # Remove nested scripts
@@ -90,7 +90,6 @@ getTelepolisData <- function(urls)
           html_text()
         
         article <- tibble(
-          webside       = webside,
           article_url   = article.source,
           title         = article.title,
           article.time  = article.time,

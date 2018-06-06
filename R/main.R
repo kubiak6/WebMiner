@@ -1,7 +1,7 @@
 library("readr")
 
-source("lib/telepolisCrawler.R")
-source("lib/telepolisScrapper.R")
+source("R/telepolisCrawler.R")
+source("R/telepolisScrapper.R")
 
 
 articlesURLs <- crawlTelepolisURLs()
