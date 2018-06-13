@@ -103,7 +103,7 @@ getTelepolisData <- function(urls)
       },
       error = function(cond)
       {
-        print(paste0("ERROR: B??d przy pobieraniu:", url, cond))
+        print(paste0("ERROR: Błąd przy pobieraniu:", url, cond))
       }
     )
   }
@@ -119,9 +119,9 @@ getTelepolisData <- function(urls)
   print("------------------- Podsumowanie -----------------");
   print("--------------------------------------------------");
   print("");
-  print(paste0("Start               : ",start));
-  print(paste0("End                 : ",end));
-  print(paste0("Pobrano artyku??w   : ", nrow(article)));
+  print(paste0("Start               : ", start));
+  print(paste0("End                 : ", end));
+  print(paste0("Pobrano artykułów   : ", nrow(article)));
   print(paste0("Pobrano komentarzy  : ", nrow(comment)));
   print("");
   print("--------------------------------------------------");
