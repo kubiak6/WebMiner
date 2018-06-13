@@ -1,11 +1,3 @@
-library('rvest')
-library("stringr")
-library("lubridate")
-library("tibble")
-library('dplyr')
-library("httr")
-library("xml2")
-
 getTelepolisData <- function(urls)
 {
   # vars for status
