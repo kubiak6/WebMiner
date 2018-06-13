@@ -37,4 +37,4 @@ rsconnect/
 .Rproj.user
 
 # temp project data
-temp/
+temp/*
