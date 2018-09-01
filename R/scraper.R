@@ -1,4 +1,4 @@
-getTelepolisData <- function(urls)
+scraper.getTelepolisData <- function(urls)
 {
   # vars for status
   bufferSIze <- length(urls)
@@ -116,7 +116,7 @@ getTelepolisData <- function(urls)
   # Stats
   print("");
   print("--------------------------------------------------");
-  print("------------------- Podsumowanie -----------------");
+  print("------------- Podsumowanie scrapingu -------------");
   print("--------------------------------------------------");
   print("");
   print(paste0("Start               : ", start));
