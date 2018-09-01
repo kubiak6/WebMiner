@@ -39,3 +39,4 @@ rsconnect/
 # temp project data
 temp/*
 database/*
+R/playground.R
