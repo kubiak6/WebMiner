@@ -1,4 +1,7 @@
-crawler.minArticleDate = ymd("2018-10-01")
+crawler.setMinArticleDate <- function(minDate)
+{
+  crawler.minArticleDate <<- minDate
+}
 
 crawler.getTelepolisURLs <- function()
 {
