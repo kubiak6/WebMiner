@@ -1,24 +1,65 @@
 # init empty databases
 database.names <<- c("database.url", "database.article", "database.comment")
 
+
+database.dummy <- function()
+{
+  database.url <<- tibble(
+    url = character(0),
+    mod_dt = numeric(0),
+    refresh_timestamp = numeric(0)
+  )
+  
+  database.article <<- tibble(
+    url       = character(0),
+    title     = character(0),
+    time      = character(0),
+    text      = character(0)
+  )
+  
+  database.comment <<- tibble(
+    url       = character(0),
+    id        = numeric(0),
+    host      = character(0),
+    dttm      = numeric(0),
+    score     = numeric(0),
+    text      = character(0),
+    nickname  = character(0)
+  )
+}
+
+
 # function for importing all databases
 database.import <- function()
 {
-  importFile <- function(file)
+  if(file.exists("database/database.url.csv"))
   {
-    if(file.exists(file))
-      tryCatch(
-        assign(file, read_delim(paste0("database/",file), delim=';'), envir = .GlobalEnv),
-        error <- function(cond)
-          print(paste0("ERROR: Error during import:", file, cond))
-      )
-    else
+    importFile <- function(file)
     {
-      print(paste0("File for ", file, " does not exist - creating empty database..."))
-      assign(file, tibble(), envir = .GlobalEnv)
+      filepath <- paste0("database/",file,".csv")
+      if(file.exists(filepath))
+        tryCatch(
+          {
+            suppressMessages(data <- read_delim(filepath, delim=';'))
+            assign(file, data, envir = .GlobalEnv)
+            print(paste0("load ",nrow(data), " rows from file ", filepath))
+          },
+          error = function(cond)
+            print(paste0("ERROR: Error during import:", filepath,", ", cond))
+        )
+      else
+      {
+        print(paste0("File for ", file, " does not exist."))
+        assign(file, NULL, envir = .GlobalEnv)
+      }
     }
+    output <- lapply(database.names, importFile)
   }
-  output <- lapply(database.names, importFile)
+  else
+  {
+    print(paste0("Database does not exist - initialization of new repository."))
+    output <- database.dummy()
+  }
 }
 
 # function for exporting all databases
@@ -27,51 +68,19 @@ database.export <- function()
   exportFile <- function(file)
   {
       tryCatch(
-        write_delim(file, path = paste0("database/",file), delim=';'),
-        error <- function(cond)
-          print(paste0("ERROR: Error during export. :", file, cond))
+        {
+          filepath <- paste0("database/",file,".csv")
+          data <- eval(parse(text=file))
+          write_delim(data, filepath, delim=';')
+          print(paste0("save ",nrow(data), " rows to file ", file)) 
+        },
+        error = function(cond)
+        {
+          print(paste0("ERROR: Error during export. Filename: ", file,", ", cond))
+        }
       )
   }
-  do.call(exportFile, database.names)
+  output <- lapply(database.names, exportFile)
 }
 
-# merge extracted URLs with persistent database
-database.compareURL <- function(allExtracted)
-{
-  if(nrow(database.url) > 0)
-  {
-    allExtracted <- extractedURLS
-    
-    # only new articles
-    new <- allExtracted %>% 
-      anti_join(database.url, by="url")
-    print(paste0("Liczba nowych URL : ", nrow(new)))
-    
-    # only articles which were modified or are not older that 3 days
-    changed <- allExtracted %>% 
-      left_join(
-        (database.url %>% rename(new_mod_dt = mod_dt)
-         ), by="url") %>%
-      filter(mod_dt!=new_mod_dt | (mod_dt + days(3) > Sys.Date())) %>% 
-      select("url", "mod_dt")
-    print(paste0("Liczba odświeżanych URL : ", nrow(changed)))
-      
-  
-    # remove changed from main db
-    old <- database.url %>% 
-      anti_join(changed, by="url") 
-    print(paste0("Liczba niezmienionych URL : ", nrow(old)))
-    
-    output <- list(new = new, 
-                   changed = changed, 
-                   old = old)
-    
-  }
-  else
-    output <- list(new = allExtracted, 
-                   changed = tibble(), 
-                   old = tibble())
-  
-  return(output)
-  
-}
+

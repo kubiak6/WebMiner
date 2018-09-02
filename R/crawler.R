@@ -1,11 +1,15 @@
-crawler.minArticleDate = ymd("2018-08-01")
+crawler.minArticleDate = ymd("2018-08-25")
 
 crawler.getTelepolisURLs <- function()
 {
   webside = "Telepolis"
   
   # empty extracted URLS
-  extractedURLs <- tibble()
+  extractedURLs <- tibble(
+    url = character(0),
+    mod_dt = numeric(0),
+    refresh_timestamp = numeric(0)
+  )
   
   url <- "http://www.telepolis.pl/sitemaps/sitemap-news.xml"
   webpage <- read_html(url)
@@ -22,11 +26,12 @@ crawler.getTelepolisURLs <- function()
     
     # Transform table to <URL, modify date> structure
     newURLs <- table %>% tibble(
-      url = table %>% html_nodes('loc') %>% html_text(),
-      mod_dt = ymd(table %>% html_nodes('lastmod') %>% html_text())
+      url                 = table %>% html_nodes('loc') %>% html_text(),
+      mod_dt              = ymd(table %>% html_nodes('lastmod') %>% html_text()),
+      refresh_timestamp   = Sys.time() # timestamp of last extraction
     ) %>% 
       select(-1) %>% 
-      filter(mod_dt > crawler.minArticleDate)
+      filter(mod_dt >= crawler.minArticleDate)
     
     # bind with others extracted URLs
     extractedURLs <- rbind(extractedURLs, newURLs)

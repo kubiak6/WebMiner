@@ -25,21 +25,15 @@ source("R/scraper.R")
 # Load scraper sourcecode
 source("R/database.R")
 
-#  Download full list of aviable articles in Telepolis
+# Load etl engine sourcecode
+source("R/etl.R")
+
+# after import all databases are in the global scope
 database.import()
-extract.url.raw <- crawler.getTelepolisURLs()
 
-extract.url.splitList <- database.compareURL(extract.url.raw)
-extract.url.new <- extract.splitList$new
-extract.url.changed <- extract.splitList$changed
-extract.url.unchanged <- extract.splitList$unchanged
-
-extract.url.extractRange <- c(extract.new$url, extract.changed$url)
-
-# Pobranie bazy danych
-extract.webside <- scraper.getTelepolisData(extract.extractRange)
-extract.article <- extract.webside[[1]]
-extract.comment <- extract.webside[[2]]
+ex <- etl.extract()
+tr <- etl.transform(ex)
+etl.load(tr)
 
 
 View(extract.comment)
@@ -47,7 +41,6 @@ View(extract.article)
 
 
 database.export()
-
 
 
 

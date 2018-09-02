@@ -82,14 +82,14 @@ scraper.getTelepolisData <- function(urls)
           html_text()
         
         article <- tibble(
-          article_url   = article.source,
-          title         = article.title,
-          article.time  = article.time,
-          article.text  = article.text
+          url       = article.source,
+          title             = article.title,
+          time              = article.time,
+          text              = article.text
         )
         
         comment <- tibble(
-          article_url = article.source,
+          url = article.source,
           id          = comment.id,
           host        = comment.host,
           dttm        = comment.dttm,
