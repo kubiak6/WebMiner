@@ -16,17 +16,11 @@ library("httr")
 library("xml2")
 library("readr")
 
-# Load crawler sourcecode
-source("R/crawler.R")
-
 # Load scraper sourcecode
-source("R/scraper.R")
-
-# Load scraper sourcecode
-source("R/database.R")
+source("R/database.R", encoding = "utf-8")
 
 # Load etl engine sourcecode
-source("R/etl.R")
+source("R/etl.R", encoding = "utf-8")
 
 # after import all databases are in the global scope
 database.import()
@@ -34,11 +28,6 @@ database.import()
 ex <- etl.extract()
 tr <- etl.transform(ex)
 etl.load(tr)
-
-
-View(extract.comment)
-View(extract.article)
-
 
 database.export()
 

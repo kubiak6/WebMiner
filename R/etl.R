@@ -9,7 +9,7 @@ etl.getExtractRange <- function(extractedURLS)
 {
   if(!is.null(database.url))
   {
-
+    
     # only new articles
     new <- extractedURLS %>% 
       anti_join(database.url, by="url")
@@ -17,7 +17,7 @@ etl.getExtractRange <- function(extractedURLS)
     
     # only articles which were modified or are not older that 3 days
     changed <- extractedURLS %>% 
-      left_join(
+      inner_join(
         (database.url %>% select(url, mod_dt) %>% rename(new_mod_dt = mod_dt)
          ),by="url") %>%
       filter(mod_dt!=new_mod_dt | (mod_dt + days(3) > Sys.Date())) %>% 
@@ -73,24 +73,6 @@ etl.extract <- function()
 # return changed instances for all databases
 etl.transform <- function(extract)
 {
-  if(is.null(extract$url))
-  {
-    tranform <- list(
-      url     = database.url,
-      article = database.article,
-      comment = database.comment
-    )
-  }
-  else if(is.null(database.url))
-  {
-    tranform <- list(
-      url      = extract$url,
-      article  = extract$article,
-      comment  = extract$comment
-    )
-  }
-  else
-  {
     transform.url <- database.url %>% 
       anti_join(extract$url, by = "url") %>% 
       rbind(extract$url)
@@ -110,7 +92,6 @@ etl.transform <- function(extract)
       article = transform.article,
       comment = transform.comment
     )
-  }
   
   return(tranform)
   
