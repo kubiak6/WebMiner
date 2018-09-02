@@ -60,9 +60,9 @@ etl.extract <- function()
   else # nothing to do here...
   {
     extract <- list(
-      url     = NULL,
-      article = NULL,
-      comment = NULL
+      url     = database.url_structure,
+      article = database.article_structure,
+      comment = database.comment_structure
     )
   }
   

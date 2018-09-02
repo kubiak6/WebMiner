@@ -2,30 +2,35 @@
 database.names <<- c("database.url", "database.article", "database.comment")
 
 
+database.url_structure <<- tibble(
+  url = character(0),
+  mod_dt = numeric(0),
+  refresh_timestamp = numeric(0)
+)
+
+database.article_structure <<- tibble(
+  url       = character(0),
+  title     = character(0),
+  time      = character(0),
+  text      = character(0)
+)
+
+database.comment_structure <<- tibble(
+  url       = character(0),
+  id        = numeric(0),
+  host      = character(0),
+  dttm      = numeric(0),
+  score     = numeric(0),
+  text      = character(0),
+  nickname  = character(0)
+)
+
+
 database.dummy <- function()
 {
-  database.url <<- tibble(
-    url = character(0),
-    mod_dt = numeric(0),
-    refresh_timestamp = numeric(0)
-  )
-  
-  database.article <<- tibble(
-    url       = character(0),
-    title     = character(0),
-    time      = character(0),
-    text      = character(0)
-  )
-  
-  database.comment <<- tibble(
-    url       = character(0),
-    id        = numeric(0),
-    host      = character(0),
-    dttm      = numeric(0),
-    score     = numeric(0),
-    text      = character(0),
-    nickname  = character(0)
-  )
+  database.url <<- database.url_structure
+  database.article <<- database.article_structure
+  database.comment <<- database.comment_structure
 }
 
 
