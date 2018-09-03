@@ -23,12 +23,18 @@ source("R/database.R", encoding = "utf-8")
 source("R/etl.R", encoding = "utf-8")
 
 # after import all databases are in the global scope
-crawler.setMinArticleDate(ymd("2018-10-01"))
+crawler.setMinArticleDate(ymd("2018-06-01"))
 
+# load persistent db
 database.import()
 
+# extract new data
 ex <- etl.extract()
 tr <- etl.transform(ex)
 etl.load(tr)
 
+# save
 database.export()
+
+database.url
+
