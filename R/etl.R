@@ -13,7 +13,7 @@ etl.getExtractRange <- function(extractedURLS)
     # only new articles
     new <- extractedURLS %>% 
       anti_join(database.url, by="url")
-    print(paste0("Liczba nowych URL : ", nrow(new)))
+    print(paste0(Sys.time(), ": URL for initial extraction : ", nrow(new)))
     
     # only articles which were modified or are not older that 3 days
     changed <- extractedURLS %>% 
@@ -21,9 +21,9 @@ etl.getExtractRange <- function(extractedURLS)
         (database.url %>% select(url, mod_dt) %>% rename(new_mod_dt = mod_dt)
          ),by="url") %>%
       filter(mod_dt!=new_mod_dt | (mod_dt + days(3) > Sys.Date())) %>% 
-      select(url, mod_dt, refresh_timestamp)
+      select(-new_mod_dt)
     
-    print(paste0("Liczba odświeżanych URL : ", nrow(changed)))
+    print(paste0(Sys.time(), ": URL for refresh : ", nrow(changed)))
     
     output <- rbind(new, changed)
     
@@ -87,13 +87,13 @@ etl.transform <- function(extract)
       anti_join(extract$url, by = "url") %>% 
       rbind(extract$comment)
     
-    tranform <- list(
+    transform <- list(
       url     = transform.url,
       article = transform.article,
       comment = transform.comment
     )
   
-  return(tranform)
+  return(transform)
   
 }
 
@@ -104,5 +104,14 @@ etl.load <- function(transform)
   database.url     <<- transform$url
   database.article <<- transform$article
   database.comment <<- transform$comment
+}
+
+etl.refreshDB <- function()
+{
+  # after import all databases are in the global scope
+  
+  etl.extract() %>% 
+    etl.transform() %>% 
+    etl.load()
 }
 
